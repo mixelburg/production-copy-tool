@@ -14,7 +14,7 @@ REMOTE_PATH = getenv('REMOTE_PATH')
 BASTION_HOST = getenv('BASTION_HOST')
 BASTION_PEM_FILE_PATH = getenv('BASTION_PEM_FILE_PATH')
 
-SSH_COMMAND = f'ssh -i {PEM_FILE_PATH} -o ProxyCommand="ssh -i {BASTION_PEM_FILE_PATH} {BASTION_HOST}"'
+SSH_COMMAND = f'ssh -i {PEM_FILE_PATH} -o ProxyCommand="ssh -i {BASTION_PEM_FILE_PATH} -W %h:%p {BASTION_HOST}"'
 
 with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
     db = json.load(f)
