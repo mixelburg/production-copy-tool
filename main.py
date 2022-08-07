@@ -25,17 +25,17 @@ with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
         print(f'Copying {user["email"]}')
         user_id = user['defaultAccount']
 
-        user_db_folder = os.path.join(DATA_FOLDER_PATH, 'db', 'accounts', user_id)
-        user_db_file = os.path.join(user_db_folder, 'db.json')
+        user_db_file = os.path.join(DATA_FOLDER_PATH, 'db', 'accounts', user_id, 'db.json')
 
         path = os.path.join(REMOTE_PATH, 'db', 'accounts', user_id)
         command = f'rsync -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_db_file} {REMOTE_HOST}:{path}'
         print(command)
         os.system(command)
 
-        # user_storage_folder = os.path.join(DATA_FOLDER_PATH, 'storage', f'account-{user_id}')
-        # command = f'rsync -aP "{SSH_COMMAND}" --rsync-path="mkdir -p {user_storage_folder} && rsync" {user_db_file} {REMOTE_PATH}'
-        # os.system(command)
+        user_storage_folder = os.path.join(DATA_FOLDER_PATH, 'storage', f'account-{user_id}')
+        path = os.path.join(REMOTE_PATH, 'storage', f'account-{user_id}')
+        command = f'rsync -aP "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_db_file} {REMOTE_HOST}:{path}'
+        os.system(command)
 
 
 
