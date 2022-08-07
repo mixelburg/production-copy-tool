@@ -33,7 +33,7 @@ with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
         os.system(command)
 
         user_storage_folder = os.path.join(DATA_FOLDER_PATH, 'storage', f'account-{user_id}')
-        path = os.path.join(REMOTE_PATH, 'storage', f'account-{user_id}')
+        path = os.path.join(REMOTE_PATH, 'storage')
         command = f'rsync -aP "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_db_file} {REMOTE_HOST}:{path}'
         os.system(command)
 
