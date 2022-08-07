@@ -21,7 +21,6 @@ SSH_COMMAND = f'ssh -i {PEM_FILE_PATH} -J dev'
 with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
     db = json.load(f)
     users_to_copy = filter(lambda x: FILTER_PATTERN in x['email'], db['users'])
-    print('Number of users to copy: ', len(list(users_to_copy)))
     for user in users_to_copy:
         print(f'Copying {user["email"]}')
         user_id = user['defaultAccount']
