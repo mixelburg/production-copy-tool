@@ -9,6 +9,8 @@ load_dotenv()
 DATA_FOLDER_PATH = getenv('DATA_FOLDER_PATH')
 PEM_FILE_PATH = getenv('PEM_FILE_PATH')
 FILTER_PATTERN = getenv('FILTER_PATTERN')
+
+REMOTE_HOST = getenv('REMOTE_HOST')
 REMOTE_PATH = getenv('REMOTE_PATH')
 
 BASTION_HOST = getenv('BASTION_HOST')
@@ -27,7 +29,7 @@ with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
         user_db_file = os.path.join(user_db_folder, 'db.json')
 
         path = os.path.join(REMOTE_PATH, 'db', 'accounts', user_id)
-        command = f'rsync -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_db_file} {path}'
+        command = f'rsync -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_db_file} {REMOTE_HOST}:{path}'
         print(command)
         os.system(command)
 
