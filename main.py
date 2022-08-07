@@ -28,13 +28,13 @@ with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
         user_db_file = os.path.join(DATA_FOLDER_PATH, 'db', 'accounts', user_id, 'db.json')
 
         path = os.path.join(REMOTE_PATH, 'db', 'accounts', user_id)
-        command = f'rsync --update --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_db_file} {REMOTE_HOST}:{path}'
+        command = f'rsync --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_db_file} {REMOTE_HOST}:{path}'
         print(command)
         os.system(command)
 
         user_storage_folder = os.path.join(DATA_FOLDER_PATH, 'storage', f'account-{user_id}')
         path = os.path.join(REMOTE_PATH, 'storage')
-        command = f'rsync --update --progress -aP "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_storage_folder} {REMOTE_HOST}:{path}'
+        command = f'rsync --progress -aP "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_storage_folder} {REMOTE_HOST}:{path}'
         os.system(command)
 
 
