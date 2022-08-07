@@ -34,8 +34,11 @@ with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
 
         user_storage_folder = os.path.join(DATA_FOLDER_PATH, 'storage', f'account-{user_id}')
         path = os.path.join(REMOTE_PATH, 'storage')
+        print(command)
         command = f'rsync --progress -aP "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_storage_folder} {REMOTE_HOST}:{path}'
         os.system(command)
+
+        print(f'\n[+] Copying {user["email"]} done\n')
 
 
 
