@@ -18,7 +18,7 @@ BASTION_HOST = getenv('BASTION_HOST')
 BASTION_PEM_FILE_PATH = getenv('BASTION_PEM_FILE_PATH')
 
 SSH_COMMAND = f'ssh -i {PEM_FILE_PATH} -J dev'
-CHUNK_SIZE = 5
+CHUNK_SIZE = 2
 
 
 def copy_files(src, dst):
