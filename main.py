@@ -30,9 +30,13 @@ def copy_files(src, dst):
 
 with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
     db = json.load(f)
-    users_to_copy = filter(lambda x: FILTER_PATTERN in x['email'], db['users'])
+    users_to_copy = list(filter(lambda x: FILTER_PATTERN in x['email'], db['users']))
+
+    cnt = 0
     for user in users_to_copy:
         print(f'Copying {user["email"]}')
+        print(f'Progress: {cnt}/{len(users_to_copy)}')
+
         user_id = user['defaultAccount']
 
         print(f'Copying {user["email"]} DB FILE')
@@ -48,3 +52,4 @@ with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
         )
 
         print(f'\n[+] Copying {user["email"]} done\n')
+        cnt += 1
