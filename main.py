@@ -18,29 +18,32 @@ BASTION_HOST = getenv('BASTION_HOST')
 BASTION_PEM_FILE_PATH = getenv('BASTION_PEM_FILE_PATH')
 
 SSH_COMMAND = f'ssh -i {PEM_FILE_PATH} -J dev'
-CHUNK_SIZE = 1
-
+CHUNK_SIZE = 20
 
 def copy_files(src, dst):
-    os.system(f'rsync --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {dst} && rsync" {src} {REMOTE_HOST}:{dst}')
-
-
-def process_user(user):
-    user_id = user['defaultAccount']
-    print(f'Sending job {user["email"]}')
-    copy_files(
-        os.path.join(DATA_FOLDER_PATH, 'db', 'accounts', user_id, 'db.json'),
-        os.path.join(REMOTE_PATH, 'db', 'accounts', user_id)
-    )
-    copy_files(
-        os.path.join(REMOTE_PATH, 'db', 'accounts', user_id),
-        os.path.join(REMOTE_PATH, 'storage')
-    )
+    command = f'rsync --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {dst} && rsync" {src} {REMOTE_HOST}:{dst}'
+    os.system(command)
 
 
 with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
     db = json.load(f)
-    users_to_copy = filter(lambda x: FILTER_PATTERN in x['email'], db['users'])
+    users_to_copy = list(filter(lambda x: FILTER_PATTERN in x['email'], db['users']))
 
-    with ThreadPoolExecutor(max_workers=CHUNK_SIZE) as exe:
-        exe.map(process_user, users_to_copy)
+    cnt = 0
+
+    for user in users_to_copy:
+        print(f'Copying {user["email"]}')
+        print(f'Progress: {cnt}/{len(users_to_copy)}')
+
+        user_id = user['defaultAccount']
+        copy_files(
+            os.path.join(DATA_FOLDER_PATH, 'db', 'accounts', user_id, 'db.json'),
+            os.path.join(REMOTE_PATH, 'db', 'accounts', user_id)
+        )
+        copy_files(
+            os.path.join(DATA_FOLDER_PATH, 'storage', f'account-{user_id}'),
+            os.path.join(REMOTE_PATH, 'storage')
+        )
+
+        print(f'\n[+] Copying {user["email"]} done\n')
+        cnt += 1
