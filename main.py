@@ -18,6 +18,16 @@ BASTION_PEM_FILE_PATH = getenv('BASTION_PEM_FILE_PATH')
 
 SSH_COMMAND = f'ssh -i {PEM_FILE_PATH} -J dev'
 
+
+def copy_files(src, dst):
+    command = f'rsync --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {dst} && rsync" {src} {REMOTE_HOST}:{dst}'
+    print('Copying files...')
+    print(f'Source: {src}')
+    print(f'Destination: {dst}')
+    print(command)
+    os.system(command)
+
+
 with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
     db = json.load(f)
     users_to_copy = filter(lambda x: FILTER_PATTERN in x['email'], db['users'])
@@ -25,27 +35,16 @@ with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
         print(f'Copying {user["email"]}')
         user_id = user['defaultAccount']
 
-        user_db_file = os.path.join(DATA_FOLDER_PATH, 'db', 'accounts', user_id, 'db.json')
+        print(f'Copying {user["email"]} DB FILE')
+        copy_files(
+            os.path.join(DATA_FOLDER_PATH, 'db', 'accounts', user_id, 'db.json'),
+            os.path.join(REMOTE_PATH, 'db', 'accounts', user_id)
+        )
 
-        path = os.path.join(REMOTE_PATH, 'db', 'accounts', user_id)
-        command = f'rsync --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_db_file} {REMOTE_HOST}:{path}'
-        print(command)
-        os.system(command)
-
-        user_storage_folder = os.path.join(DATA_FOLDER_PATH, 'storage', f'account-{user_id}')
-        path = os.path.join(REMOTE_PATH, 'storage')
-        print(command)
-        command = f'rsync --progress -aP "{SSH_COMMAND}" --rsync-path="mkdir -p {path} && rsync" {user_storage_folder} {REMOTE_HOST}:{path}'
-        os.system(command)
+        print(f'Copying {user["email"]} STORAGE FOLDER')
+        copy_files(
+            os.path.join(DATA_FOLDER_PATH, 'storage', f'account-{user_id}'),
+            os.path.join(REMOTE_PATH, 'storage')
+        )
 
         print(f'\n[+] Copying {user["email"]} done\n')
-
-
-
-
-
-
-
-
-
-
