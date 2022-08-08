@@ -22,12 +22,7 @@ CHUNK_SIZE = 20
 
 
 def copy_files(src, dst):
-    command = f'rsync --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {dst} && rsync" {src} {REMOTE_HOST}:{dst}'
-    # print('Copying files...')
-    # print(f'Source: {src}')
-    # print(f'Destination: {dst}')
-    # print(command)
-    os.system(command)
+    os.system(f'rsync --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {dst} && rsync" {src} {REMOTE_HOST}:{dst}')
 
 
 def process_user(user):
