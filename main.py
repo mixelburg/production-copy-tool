@@ -3,26 +3,18 @@ import os.path
 from os import getenv
 
 from dotenv import load_dotenv
-from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 
 DATA_FOLDER_PATH = getenv('DATA_FOLDER_PATH')
-PEM_FILE_PATH = getenv('PEM_FILE_PATH')
 FILTER_PATTERN = getenv('FILTER_PATTERN')
-
-REMOTE_HOST = getenv('REMOTE_HOST')
 REMOTE_PATH = getenv('REMOTE_PATH')
 
-BASTION_HOST = getenv('BASTION_HOST')
-BASTION_PEM_FILE_PATH = getenv('BASTION_PEM_FILE_PATH')
-
-SSH_COMMAND = f'ssh -i {PEM_FILE_PATH} -J dev'
 CHUNK_SIZE = 20
 
+
 def copy_files(src, dst):
-    command = f'rsync --progress -aP -e "{SSH_COMMAND}" --rsync-path="mkdir -p {dst} && rsync" {src} {REMOTE_HOST}:{dst}'
-    os.system(command)
+    os.system(f'rsync -aP --rsync-path="mkdir -p {dst} && rsync" {src} {dst}')
 
 
 with open(os.path.join(DATA_FOLDER_PATH, 'db.json')) as f:
